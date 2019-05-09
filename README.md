@@ -1,6 +1,6 @@
 # Web-Server
 
-### 版本1：单进程+BIO 版本的web server!  
+### 版本1：单进程+BIO 的web server!  
   * 使用包裹函数处理错误  
   
   当没有连接到来的时候,该进程会阻塞在Accept函数上,  
@@ -13,7 +13,7 @@
   
   
   
-### 版本2：多进程+BIO 版本的web server!
+### 版本2：多进程+BIO 的web server!
 
   * 比单进程+BIO版本的server效率有所提高  
 
@@ -30,7 +30,7 @@
 ###### 解决的bug:  
   * 解决了僵死进程的问题
 
-### 版本3:多线程+BIO 版本的web server!
+### 版本3:多线程+BIO 的web server!
   
   * 和多进程+BIO版本的web server各有千秋
   * 其效率取决于server的业务和物理机器的硬件资源  
@@ -64,7 +64,7 @@
     * 多线程编程和调试复杂
 ###### 写Web Server个人倾向于使用多线程  
 
-### 版本4:线程池+BIO 版本的web server  
+### 版本4:线程池+BIO 的web server  
 合理的利用线程池能带来三个好处:    
 
 * 1.降低资源消耗,不用频繁的创建和消耗线程    
@@ -84,7 +84,7 @@
 ###### 总结:  
 线程池的实现简陋了点，下一版本目标是实现一个完整的线程池，解决上面存在的问题
 
-### 版本5:完整的线程池+BIO 版本的web server  
+### 版本5:完整的线程池+BIO 的web server  
 * 任务队列采用链表+头尾双指针实现
 ###### 线程池原理：
 * 线程池有一个属性为线程池允许的最大线程数
@@ -94,8 +94,8 @@
 * 因为是BIO，所以效率仍然达不到高性能web server的要求！
 ##### 总结：  
 * 解决了版本4存在的问题，整个线程池非常完整，封装得也还可以！下一版本的目标是实现非阻塞IO  
-### 版本6:单线程+epoll LT 版本的web server  
-* 采用epoll，使用LT模式实现非阻塞IO
+### 版本6:单线程 + IO多路复用(epoll LT) + Reactor模式 的web server  
+* 采用epoll，使用LT模式实现IO多路复用
 
 * 将http处理代码封装成了Httphandle类，配备读写缓冲区，连接描述符，发送的文件信息，以及读写相关指针等信息  
 
@@ -111,10 +111,12 @@
   * LT模式可以改为效率更高的ET模式
   * 可以采用多线程进行处理
 
-### 版本7:单线程+epoll ET 版本的web server  
+### 版本7:单线程 + IO多路复用(epoll ET) +Reactor模式 的web server  
 * 采用比LT模式效率更高的ET模式，目的是减少事件被触发的次数  
 * 其他同上版本  
-### 版本8:线程池+epoll ET 版本的web server  
+### 版本8:线程池+ IO多路复用(epoll ET) + Reactor模式 的web server  
+* Reactor模式
+
 * 实现了一个线程池和生产者消费者模型  
 
 * 实现了一个条件变量condition类，用来实现线程之间的协作  
@@ -131,10 +133,23 @@
 
 * 使用了cpp的新特性，使用boost::funciton和boost::bind代替template，增加了程序可读性
  
-* 解决了Cache中shared_ptr多线程不安全问题
+* 解决了Cache中shared_ptr多线程不安全问题  
+
+* 通过EPOLLONESHOT避免了一个连接的数据被多个线程读取的情况  
+### 版本9:最后的版本  
+* 参考moduo库，实现了一个高效带缓冲的的Buffer类，支持自适应扩容，内存连续，利用了临时的栈上空间暂存数据，带缓冲，不用自己去read()或write某个socket，只用操作TcpConnection的input buffer和output buffer.  
+![](https://img-my.csdn.net/uploads/201104/17/0_1303014373Vfgb.gif)  
+![](https://img-my.csdn.net/uploads/201104/17/0_1303014373FZQM.gif)
 
 
+* 为了更好的处理连接，将处理连接的动作拆分了出来组成了一个HttpRequest类
 
+* 解决了一个连接数据可能被多个线程读的情况
+
+* 完善了状态机机制，服务器现在能有效处理客户端发送不规则数据造成的各种情况
+
+![](https://img-blog.csdn.net/20161104143716693)
+![](https://img-blog.csdn.net/20161104143648365)
 
 
 
