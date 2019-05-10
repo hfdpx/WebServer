@@ -138,8 +138,8 @@
 * 通过EPOLLONESHOT避免了一个连接的数据被多个线程读取的情况  
 ### 版本9:最后的版本  
 * 参考moduo库，实现了一个高效带缓冲的的Buffer类，支持自适应扩容，内存连续，利用了临时的栈上空间暂存数据，带缓冲，不用自己去read()或write某个socket，只用操作TcpConnection的input buffer和output buffer.  
-![](https://img-my.csdn.net/uploads/201104/17/0_1303014373Vfgb.gif)  
-![](https://img-my.csdn.net/uploads/201104/17/0_1303014373FZQM.gif)
+![0_1303014373Vfgb.gif.png](https://i.loli.net/2019/05/10/5cd4ca01a2e97.png)  
+![0_1303014373FZQM.gif.png](https://i.loli.net/2019/05/10/5cd4ca33434d5.png)
 
 
 * 为了更好的处理连接，将处理连接的动作拆分了出来组成了一个HttpRequest类
@@ -148,8 +148,8 @@
 
 * 完善了状态机机制，服务器现在能有效处理客户端发送不规则数据造成的各种情况
 
-![](https://img-blog.csdn.net/20161104143716693)
-![](https://img-blog.csdn.net/20161104143648365)
+![20161104143716693.png](https://i.loli.net/2019/05/10/5cd4ca484cbe4.png)
+![20161104143648365.png](https://i.loli.net/2019/05/10/5cd4ca5640430.png)
 
 
 
