@@ -22,7 +22,7 @@ class heap_timer
 public:
     heap_timer(int delay)
     {
-        expire = time(NULL) + delay;
+        expire =  delay;//在真正加入堆的时候再调用time(NULL)获取系统时间，这样该函数就只会被调用一次，节省开销
     }
 
 public:

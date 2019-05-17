@@ -95,14 +95,15 @@ int main(int argc, char *argv[])
                         unix_error("accept error");
                     }
 
+                    //定时器初始化并且将定时器和连接捆绑
                     client_data *users =new client_data[1];
                     users[0].sockfd=connfd;
-
                     heap_timer *timer = new heap_timer(TIMESLOT);
                     timer->user_data=&users[0];
                     timer->cb_func=cb_func;
 
-
+                    //在连接初始化的时候并没有将连接的定时器加入到小根堆，因为我们处理连接的速度是很快的，没有必要连接刚刚到就给它加入小根堆，这样可以避免小根堆元素的膨胀
+                    //只有实在经过了一次处理之后还没有被关闭的连接才加入小根堆定时器
                     handle[connfd].init(connfd,timer);   /*  连接初始化      */
                     addfd(epollfd, connfd, true);  /*  将连接加入监听 */
 

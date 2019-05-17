@@ -114,9 +114,6 @@ void HttpHandle::init(int sockfd,heap_timer *timer)
 
     timer_=timer;
 
-    //将定时器加入最小堆
-    client_time_heap.add_timer(timer_);
-
     //int reuse = 1;
     //Setsockopt(sockfd_, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)); /* 设置端口重用? */
 
@@ -260,6 +257,10 @@ void HttpHandle::process()
     {
         modfd(epollfd_, sockfd_, EPOLLIN, true);
 
+        timer_->expire+=time(NULL);//设置超时时间
+        //如果完成一次读写之后连接还没有被关闭，那么再将连接加入小根堆定时器
+        client_time_heap.add_timer(timer_);
+
         //最小堆的心跳函数 淘汰过期的连接
         client_time_heap.tick();
 
@@ -273,6 +274,9 @@ void HttpHandle::process()
     default:
     {
         removefd(epollfd_, sockfd_);
+
+        client_time_heap.del_timer(timer_);//删除已经关闭连接的定时器
+
         break;
     }
     }
